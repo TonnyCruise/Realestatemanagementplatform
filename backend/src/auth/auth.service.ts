@@ -69,6 +69,19 @@ export class AuthService {
     return this.signTokens(user.id, user.role);
   }
 
+  async getMe(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true, phone: true, email: true, firstName: true, lastName: true,
+        role: true, country: true, isVerified: true, profilePhoto: true,
+        subscriptionId: true, createdAt: true,
+      },
+    });
+    if (!user) throw new UnauthorizedException();
+    return user;
+  }
+
   async refreshToken(userId: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user || !user.isActive) throw new UnauthorizedException();
