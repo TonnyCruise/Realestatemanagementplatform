@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
+import PropertyMap from '../components/PropertyMap';
 import { api } from '../../lib/api';
 
 const PROPERTY_TYPES = ['APARTMENT', 'HOUSE', 'BEDSITTER', 'STUDIO', 'COMMERCIAL', 'LAND'];
@@ -158,6 +159,7 @@ export default function PropertySearch() {
                 {properties.map((property: any) => (
                   <div
                     key={property.id}
+                    id={`property-${property.id}`}
                     onClick={() => navigate(`/property/${property.id}`)}
                     onMouseEnter={() => setSelectedProperty(property.id)}
                     onMouseLeave={() => setSelectedProperty(null)}
@@ -212,31 +214,25 @@ export default function PropertySearch() {
           </div>
         </div>
 
-        {/* Map placeholder */}
+        {/* Map */}
         {viewMode === 'split' && (
-          <div className="w-1/2 bg-gray-100 border-l border-gray-200 sticky top-0 h-[calc(100vh-200px)]">
-            <div className="h-full flex items-center justify-center relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300">
-                <div className="h-full w-full relative">
-                  {properties.map((property: any, idx: number) => (
-                    <div
-                      key={property.id}
-                      onClick={() => navigate(`/property/${property.id}`)}
-                      className={`absolute cursor-pointer transition-all ${selectedProperty === property.id ? 'z-10 scale-125' : ''}`}
-                      style={{ left: `${15 + (idx % 7) * 11}%`, top: `${20 + (idx % 4) * 17}%` }}
-                    >
-                      <div className={`px-3 py-1 rounded-full shadow-lg ${selectedProperty === property.id ? 'bg-[#2ecc71] text-white' : 'bg-white text-[#1a2e4a]'}`}>
-                        <span className="text-sm">{formatPrice(property.pricePerMonth, property.currency)}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-[#2ecc71]" />
-                <span className="text-sm">Map view — Google Maps coming soon</span>
-              </div>
-            </div>
+          <div className="w-1/2 border-l border-gray-200 sticky top-0 h-[calc(100vh-200px)]">
+            <PropertyMap
+              properties={properties.map((p: any) => ({
+                id: p.id,
+                lat: p.location?.coordinates?.[1] ?? 0,
+                lng: p.location?.coordinates?.[0] ?? 0,
+                price: formatPrice(p.pricePerMonth, p.currency),
+              }))}
+              selectedId={selectedProperty}
+              onSelect={(id) => {
+                setSelectedProperty(id);
+                if (id) {
+                  const el = document.getElementById(`property-${id}`);
+                  el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+              }}
+            />
           </div>
         )}
       </div>
