@@ -9,6 +9,7 @@ import Onboarding from './pages/Onboarding';
 import AdminDashboard from './pages/AdminDashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import AddProperty from './pages/AddProperty';
 import ProtectedRoute from './components/ProtectedRoute';
 
 export const router = createBrowserRouter([
@@ -40,6 +41,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute roles={['ADMIN']}>
         <AdminDashboard />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/property/new',
+    element: (
+      <ProtectedRoute roles={['LANDLORD']}>
+        <AddProperty />
       </ProtectedRoute>
     ),
   },
