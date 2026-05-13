@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import {
   Building2, DollarSign, Users, Wrench, Plus, MoreVertical,
-  TrendingUp, Home, LogOut, Settings, Bell, Search, Loader2,
+  TrendingUp, Home, LogOut, Settings, Search, Loader2,
 } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { api } from '../../lib/api';
 import { useAuthStore } from '../../store/auth';
+import NotificationBell from '../components/NotificationBell';
 
 function useProperties() {
   return useQuery({
@@ -90,10 +91,7 @@ export default function LandlordDashboard() {
               <span className="text-sm text-gray-500 ml-2">Landlord Portal</span>
             </div>
             <div className="flex items-center gap-4">
-              <button className="p-2 hover:bg-gray-100 rounded-lg relative">
-                <Bell className="h-5 w-5 text-gray-600" />
-                <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full" />
-              </button>
+              <NotificationBell />
               <button className="p-2 hover:bg-gray-100 rounded-lg">
                 <Settings className="h-5 w-5 text-gray-600" />
               </button>

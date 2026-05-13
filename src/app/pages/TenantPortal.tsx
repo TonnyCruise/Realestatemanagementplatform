@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import {
   CreditCard, FileText, Wrench, MessageSquare, Home, LogOut, Settings,
-  Bell, Download, Upload, CheckCircle, Clock, Loader2,
+  Download, Upload, CheckCircle, Clock, Loader2,
 } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api';
 import { useAuthStore } from '../../store/auth';
 import PaymentModal from '../components/PaymentModal';
+import NotificationBell from '../components/NotificationBell';
 
 function useTenancy() {
   return useQuery({
@@ -108,10 +109,7 @@ export default function TenantPortal() {
               <span className="text-sm text-gray-500 ml-2">Tenant Portal</span>
             </div>
             <div className="flex items-center gap-4">
-              <button className="p-2 hover:bg-gray-100 rounded-lg relative">
-                <Bell className="h-5 w-5 text-gray-600" />
-                <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full" />
-              </button>
+              <NotificationBell />
               <button className="p-2 hover:bg-gray-100 rounded-lg">
                 <Settings className="h-5 w-5 text-gray-600" />
               </button>
