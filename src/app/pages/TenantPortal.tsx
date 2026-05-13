@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api';
 import { useAuthStore } from '../../store/auth';
+import PaymentModal from '../components/PaymentModal';
 
 function useTenancy() {
   return useQuery({
@@ -63,6 +64,7 @@ export default function TenantPortal() {
   const [activeTab, setActiveTab] = useState<'overview' | 'payments' | 'maintenance' | 'documents' | 'messages'>('overview');
   const [showMaintenanceForm, setShowMaintenanceForm] = useState(false);
   const [maintForm, setMaintForm] = useState({ title: '', category: 'PLUMBING', description: '', unitId: '' });
+  const [payingInvoice, setPayingInvoice] = useState<any>(null);
 
   const { data: tenancies = [], isLoading: loadingTenancy } = useTenancy();
   const { data: invoices = [], isLoading: loadingInvoices } = useInvoices();
@@ -223,7 +225,7 @@ export default function TenantPortal() {
                   <p className="text-gray-600 mb-4">{pendingInvoice ? 'Amount due' : 'No outstanding balance'}</p>
                   {pendingInvoice && (
                     <button
-                      onClick={() => setActiveTab('payments')}
+                      onClick={() => setPayingInvoice(pendingInvoice)}
                       className="w-full py-2 bg-[#1a2e4a] hover:bg-[#2c4a6e] text-white rounded-lg"
                     >
                       Pay Now
@@ -270,7 +272,10 @@ export default function TenantPortal() {
                       </div>
                       <div className="flex items-center gap-3">
                         <span className={`px-2 py-1 rounded-full text-xs ${invoiceStatusColor(inv.status)}`}>{inv.status}</span>
-                        <button className="px-4 py-2 bg-[#2ecc71] hover:bg-[#27ae60] text-white rounded-lg text-sm">
+                        <button
+                          onClick={() => setPayingInvoice(inv)}
+                          className="px-4 py-2 bg-[#2ecc71] hover:bg-[#27ae60] text-white rounded-lg text-sm"
+                        >
                           Pay Now
                         </button>
                       </div>
@@ -426,6 +431,23 @@ export default function TenantPortal() {
           )}
         </main>
       </div>
+
+      {payingInvoice && (
+        <PaymentModal
+          invoice={{
+            id: payingInvoice.id,
+            period: payingInvoice.period,
+            amount: payingInvoice.amount,
+            currency: payingInvoice.currency ?? 'KES',
+          }}
+          onClose={() => setPayingInvoice(null)}
+          onSuccess={() => {
+            queryClient.invalidateQueries({ queryKey: ['tenant-invoices'] });
+            queryClient.invalidateQueries({ queryKey: ['tenant-payments'] });
+            setPayingInvoice(null);
+          }}
+        />
+      )}
     </div>
   );
 }

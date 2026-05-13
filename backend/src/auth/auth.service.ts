@@ -75,7 +75,7 @@ export class AuthService {
       select: {
         id: true, phone: true, email: true, firstName: true, lastName: true,
         role: true, country: true, isVerified: true, profilePhoto: true,
-        subscriptionId: true, createdAt: true,
+        subscription: { select: { id: true, plan: true, status: true } }, createdAt: true,
       },
     });
     if (!user) throw new UnauthorizedException();

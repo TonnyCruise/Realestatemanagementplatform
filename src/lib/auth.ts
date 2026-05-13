@@ -13,7 +13,7 @@ export interface User {
   country: Country;
   isVerified: boolean;
   profilePhoto?: string;
-  subscriptionId?: string;
+  subscription?: { id: string; plan: string; status: string };
   createdAt: string;
 }
 
